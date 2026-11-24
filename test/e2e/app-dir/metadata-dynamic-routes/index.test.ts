@@ -466,24 +466,13 @@ describe('app dir - metadata dynamic routes', () => {
     expect(twitterTitle).toBe('Twitter - Next.js App')
     expect(twitterDescription).toBe('Twitter - This is a Next.js App')
 
-    // Should prefer to pick up deployment url for metadata routes
-    let ogImageUrlPattern
-    let twitterImageUrlPattern
-    if (isNextDeploy) {
-      // absolute urls
-      ogImageUrlPattern = /https:\/\/[^/]+\/opengraph-image\?/
-      twitterImageUrlPattern = /https:\/\/[^/]+\/twitter-image\?/
-    } else if (isNextStart) {
-      // configured metadataBase for next start
-      ogImageUrlPattern = /https:\/\/mydomain.com\/opengraph-image\?/
-      twitterImageUrlPattern = /https:\/\/mydomain.com\/twitter-image\?/
-    } else {
-      // localhost for dev
-      ogImageUrlPattern = /http:\/\/localhost:\d+\/opengraph-image\?/
-      twitterImageUrlPattern = /http:\/\/localhost:\d+\/twitter-image\?/
-    }
-    expect(ogImageUrl).toMatch(ogImageUrlPattern)
-    expect(twitterImageUrl).toMatch(twitterImageUrlPattern)
+    const imageHost = isNextDeploy ? '[^/]+' : 'mydomain\\.com'
+    expect(ogImageUrl).toMatch(
+      new RegExp(`^https://${imageHost}/opengraph-image\\?`)
+    )
+    expect(twitterImageUrl).toMatch(
+      new RegExp(`^https://${imageHost}/twitter-image\\?`)
+    )
     expect(ogImageUrl).toMatch(hashRegex)
     expect(twitterImageUrl).toMatch(hashRegex)
 

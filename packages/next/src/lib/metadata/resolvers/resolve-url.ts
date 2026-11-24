@@ -27,7 +27,7 @@ function getProductionDeploymentUrl(): URL | undefined {
 /**
  * Given an optional user-provided metadataBase, this determines what the metadataBase should
  * fallback to. Specifically:
- * - In dev, it should always be localhost
+ * - In dev, use the user-provided metadataBase or fall back to localhost
  * - In Vercel preview builds, it should be the preview build ID
  * - In start, it should be the user-provided metadataBase value. Otherwise,
  * it'll fall back to the Vercel production deployment, and localhost as a last resort.
@@ -41,7 +41,7 @@ export function getSocialImageMetadataBaseFallback(
 
   let fallbackMetadataBase
   if (process.env.NODE_ENV === 'development') {
-    fallbackMetadataBase = defaultMetadataBase
+    fallbackMetadataBase = metadataBase || defaultMetadataBase
   } else {
     fallbackMetadataBase =
       process.env.NODE_ENV === 'production' &&

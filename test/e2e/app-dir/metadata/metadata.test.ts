@@ -435,6 +435,7 @@ describe('app dir - metadata', () => {
 
     it('should pick up opengraph-image and twitter-image as static metadata files', async () => {
       const $ = await next.render$('/opengraph/static')
+      const imageHost = isNextDeploy ? '[^/]+' : 'example\\.com'
 
       const match = createMultiHtmlMatcher($)
       match('meta', 'property', 'content', {
@@ -442,31 +443,15 @@ describe('app dir - metadata', () => {
         'og:image:height': '114',
         'og:image:type': 'image/png',
         'og:image:alt': 'A alt txt for og',
-        'og:image': isNextDev
-          ? expect.stringMatching(
-              /http:\/\/localhost:\d+\/opengraph\/static\/opengraph-image/
-            )
-          : expect.stringMatching(
-              new RegExp(
-                `https:\\/\\/(${
-                  isNextDeploy ? '[^/]+' : 'example\\.com'
-                })\\/opengraph\\/static\\/opengraph-image`
-              )
-            ),
+        'og:image': expect.stringMatching(
+          new RegExp(`^https://${imageHost}/opengraph/static/opengraph-image`)
+        ),
       })
 
       match('meta', 'name', 'content', {
-        'twitter:image': isNextDev
-          ? expect.stringMatching(
-              /http:\/\/localhost:\d+\/opengraph\/static\/twitter-image/
-            )
-          : expect.stringMatching(
-              new RegExp(
-                `https:\\/\\/(${
-                  isNextDeploy ? '[^/]+' : 'example\\.com'
-                })\\/opengraph\\/static\\/twitter-image`
-              )
-            ),
+        'twitter:image': expect.stringMatching(
+          new RegExp(`^https://${imageHost}/opengraph/static/twitter-image`)
+        ),
         'twitter:image:alt': 'A alt txt for twitter',
         'twitter:card': 'summary_large_image',
       })
